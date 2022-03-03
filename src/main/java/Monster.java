@@ -6,7 +6,7 @@ import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class Monster{
+public abstract class Monster{
     private String name;
     private int personId;
     private int id;
@@ -173,21 +173,6 @@ public class Monster{
                     .addParameter("personID",this.personId)
                     .executeUpdate()
                     .getKey();
-        }
-    }
-
-    public static List <Monster> all(){
-        try(Connection conn = Db.sql2o.open()){
-            return conn.createQuery("SELECT * FROM monsters")
-                    .executeAndFetch(Monster.class);
-        }
-    }
-
-    public static Monster find(int id){
-        try(Connection conn = Db.sql2o.open()) {
-            return conn.createQuery("SELECT * FROM monsters WHERE id = :id")
-                    .addParameter("id",id)
-                    .executeAndFetchFirst(Monster.class);
         }
     }
 }
