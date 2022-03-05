@@ -10,15 +10,19 @@ public abstract class Monster{
     private String name;
     private int personId;
     private int id;
-    private int playLevel;
-    private int foodLevel;
-    private int sleepLevel;
+    public int playLevel;
+    public int foodLevel;
+    public int sleepLevel;
     private Timestamp birthday;
     private Timestamp lastSlept;
     private Timestamp lastAte;
     private Timestamp lastPlayed;
 
+
+
+
     private Timer timer;//Timer class
+    public String type;
     //Constants
     public static final int MAX_FOOD_LEVEL = 3;
     public static final int MAX_SLEEP_LEVEL = 8;
@@ -167,10 +171,11 @@ public abstract class Monster{
 
     public void save(){
         try(Connection conn = Db.sql2o.open() ){
-            String sql = "INSERT INTO monsters (name,personID,birthday) VALUES (:name,:personID,now())";
+            String sql = "INSERT INTO monsters (name,personID,birthday,type) VALUES (:name,:personID,now(),:type)";
             this.id = (int)conn.createQuery(sql,true)
                     .addParameter("name",this.name)
                     .addParameter("personID",this.personId)
+                    .addParameter("type",this.type)
                     .executeUpdate()
                     .getKey();
         }

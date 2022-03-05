@@ -1,5 +1,6 @@
 import org.sql2o.Connection;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -72,12 +73,36 @@ public class Person {
         }
     }
 
-    public List<Monster> getMonsters() {
+    //Previous getMonsters
+//    public List<Monster> getMonsters() {
+//        try(Connection con = Db.sql2o.open()) {
+//            String sql = "SELECT * FROM monsters where personId=:id";
+//            return con.createQuery(sql)
+//                    .addParameter("id", this.id)
+//                    .executeAndFetch(Monster.class);
+//        }
+//    }
+
+    public List<Object> getMonsters() {
+        List<Object> allMonsters = new ArrayList<Object>();
+
         try(Connection con = Db.sql2o.open()) {
-            String sql = "SELECT * FROM monsters where personId=:id";
-            return con.createQuery(sql)
+            String sqlFire = "SELECT * FROM monsters WHERE personId=:id AND type='fire';";
+            List<FireMonster> fireMonsters = con.createQuery(sqlFire)
                     .addParameter("id", this.id)
-                    .executeAndFetch(Monster.class);
+                    .throwOnMappingFailure(false)
+                    .executeAndFetch(FireMonster.class);
+            allMonsters.addAll(fireMonsters);//Add fire monsters contents to allMonsters
+
+            String sqlWater = "SELECT * FROM monsters WHERE personId=:id AND type='water';";
+            List<WaterMonster> waterMonsters = con.createQuery(sqlWater)
+                    .addParameter("id", this.id)
+                    .throwOnMappingFailure(false)
+                    .executeAndFetch(WaterMonster.class);
+
+            allMonsters.addAll(waterMonsters);//Add water monsters contents to allMonsters
         }
+
+        return allMonsters;
     }
 }
